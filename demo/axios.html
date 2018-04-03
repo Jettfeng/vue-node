@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="../node_modules/vue/dist/vue.js"></script>
+  <script src="../node_modules/axios/dist/axios.js"></script>
+</head>
+<body>
+<div id="app" class="container">
+  <h1>axios插件</h1>
+  <a href="javascript:;" class="btn btn-primary" @click="get">Get请求</a>
+  <a href="javascript:;" class="btn btn-primary" @click="post">Post请求</a>
+  <!--<a href="javascript:;" class="btn btn-primary" @click="jsonp">Jsonp请求</a>-->
+  <a href="javascript:;" class="btn btn-primary" @click="http">http</a>
+  <div>
+    <span>{{msg}}</span>
+  </div>
+</div>
+</body>
+<script>
+  new Vue({
+    el:'#app',
+    data:{
+      msg:''
+    },
+    mounted:function(){
+        // 全局拦截器(可以处理loading)
+      axios.interceptors.request.use(function (config) {
+        console.log('请求初始化')
+        return config;
+      }, function (error) {
+        return Promise.reject(error);
+      });
+      axios.interceptors.response.use(function (response) {
+        console.log('响应初始化')
+        return response;
+      }, function (error) {
+        // Do something with response error
+        return Promise.reject(error);
+      });
+    },
+    methods:{
+      get:function(){
+          axios.get("../package.json",{
+            params: {
+              ID: 12345
+            },
+            headers: {
+              token: 'jack'
+            },
+          }).then(res=>{
+            this.msg = res.data
+          })
+      },
+      post:function(){
+         axios.post("../package.json",{
+           firstName: 'Fred',
+           lastName: 'Flintstone'
+         },{
+           headers: {
+             token: 'jack'
+           },
+         }).then(res=>{
+           this.msg = res.data
+         })
+      },
+      http:function(){
+        // post方法
+        axios({
+          method: 'post',
+          url: '../package.json',
+          headers: {
+            token: 'jack'
+          },
+          data: {
+            firstName: 'Fred',
+            lastName: 'Flintstone'
+          }
+        }).then(res=>{
+          this.msg = res.data
+        });
+        // get方法
+        // axios({
+        //   method:'get',
+        //   url:'../package.json',
+        //   headers: {
+        //     token: 'jack'
+        //   },
+        //   params: {
+        //         firstName: 'Fred',
+        //         lastName: 'Flintstone'
+        //       }
+        // }).then(res=>{
+        //   this.msg = res.data
+        // })
+      }
+    }
+  })
+</script>
+</html>
