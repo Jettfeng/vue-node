@@ -44,13 +44,13 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
-    },
-    // 定义商品接口
-    before(app){
-      app.get('/goods/list',function(req,res,next){
-        res.json(goodsData)
-      })
     }
+    // 定义商品接口
+    // before(app){
+    //   app.get('/goods/list',function(req,res,next){
+    //     res.json(goodsData)
+    //   })
+    // }
   },
   plugins: [
     new webpack.DefinePlugin({

@@ -10,7 +10,18 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    // 设置接口代理
+    proxyTable: {
+      '/goods':{
+        target: "http://localhost:3000"//进行转换，当访问'/goods'时转换为‘http://localhost:3000/goods’
+      },
+      '/goods/*':{
+        target: "http://localhost:3000"//进行转换，当访问'/goods'时转换为‘http://localhost:3000/goods’
+      },
+      '/users/*':{
+        target: "http://localhost:3000"//进行转换，当访问'/goods'时转换为‘http://localhost:3000/goods’
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
@@ -20,7 +31,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */
