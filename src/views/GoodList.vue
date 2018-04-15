@@ -12,7 +12,7 @@
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
-          <a @click="sortGoods" href="javascript:void(0)" class="price">Price
+          <a @click="sortGoods" href="javascript:void(0)" class="price" :class="{'sort-up':!sortFlag}">Price
             <svg class="icon icon-arrow-short">
               <use xlink:href="#icon-arrow-short"></use>
             </svg>
@@ -59,6 +59,28 @@
     </div>
     <!--遮罩层-->
     <div class="md-overlay" v-show="overLayFlag" @click.stop="closePop"></div>
+    <!--加入购物车失败弹框-->
+    <modal :mdShow="mdShow" @close="closeModal">
+      <p slot="message">
+        请先登陆，否则无法加入到购物车
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" @click="mdShow = false">关闭</a>
+      </div>
+    </modal>
+    <!--加入购物车成功弹框-->
+    <modal :mdShow="mdShowCart" @close="closeModal" >
+      <p slot="message">
+        <svg class="icon-status-ok">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+        </svg>
+        <span>加入购物车成!</span>
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" @click="mdShowCart = false">继续购物</a>
+        <router-link class="btn btn--m" to="/cart">查看购物车</router-link>
+      </div>
+    </modal>
     <!--底部-->
     <nav-footer></nav-footer>
   </div>
@@ -69,11 +91,20 @@
   line-height: 100px;
   text-align: center;
 }
+.sort-up{
+  transfrom:rotate(180deg);
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
 </style>
 <script>
   import NavHeader from './../components/NavHeader'
   import NavFooter from './../components/NavFooter'
   import NavBread from './../components/NavBread'
+  import Modal from './../components/Modal'
   import axios from 'axios'
   export default {
     data(){
@@ -84,6 +115,8 @@
         pageSize:8,
         busy:true,
         loading:false,
+        mdShow:false,
+        mdShowCart:false,
         priceFilter:[
           {
             startPrice:'0.00',
@@ -115,7 +148,7 @@
           priceLevel:this.priceChecked
         };
         this.loading = true;
-        axios.get("/goods",{
+        axios.get("/goods/list",{
           params:param
         }).then((response)=>{
           var res = response.data;
@@ -155,11 +188,15 @@
         }).then((res)=>{
           console.log(res)
           if(res.data.status == 0){
-            alert('加入成功')
+            this.mdShowCart = true
           }else{
-            alert("msg:"+res.msg)
+            this.mdShow = true
           }
         })
+      },
+      closeModal(){
+        this.mdShow = false
+        this.mdShowCart = false
       },
       // 移动端显示价格和遮罩层
       showFilterPop(){
@@ -181,7 +218,8 @@
     components: {
       NavHeader,
       NavFooter,
-      NavBread
+      NavBread,
+      Modal
     }
   }
 </script>

@@ -22,6 +22,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 路由拦截
+app.use(function (req,res,next) {
+  if(req.cookies.userId){
+    next();
+  }else{
+    console.log("url:"+req.originalUrl);
+    if(req.originalUrl=='/users/login' || req.originalUrl=='/users/logout' || req.originalUrl.indexOf('/goods/list')>-1){
+      next();
+    }else{
+      res.json({
+        status:'10001',
+        msg:'当前未登录',
+        result:''
+      });
+    }
+  }
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goods', goodsRouter);

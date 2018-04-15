@@ -16,7 +16,7 @@ mongoose.connection.on('disconnected', function () {
   console.log('mongodb connected disconnected')
 })
 
-router.get('/', function (req, res, next) {
+router.get('/list', function (req, res, next) {
   // res.send('hello goods list')
   // 在MongoDB里面叫文档
   let page = parseInt(req.query.page)

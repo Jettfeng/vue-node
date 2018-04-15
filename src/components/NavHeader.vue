@@ -21,7 +21,7 @@
           <!--<a href="/" class="navbar-link">我的账户</a>-->
           <span class="navbar-link" v-if="nickName">{{nickName}}</span>
           <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="loginModalFlag=true">Login</a>
-          <a href="javascript:void(0)" class="navbar-link" v-if="nickName">Logout</a>
+          <a href="javascript:void(0)" class="navbar-link" v-if="nickName" @click="loginOut">Logout</a>
           <div class="navbar-cart-container">
             <span class="navbar-cart-count"></span>
             <a class="navbar-link navbar-cart-link" href="/#/cart">
@@ -152,6 +152,7 @@
 </style>
 <script>
   import './../assets/css/login.css'
+  import './../assets/css/checkout.css'
   import axios from 'axios'
 
   export default {
@@ -164,8 +165,24 @@
         nickName:''
       }
     },
+    mounted(){
+      this.checkLogin()
+    },
     methods: {
+      checkLogin(){
+        axios.get('/users/checkLogin').then((response)=>{
+          // console.log(res)
+          let res = response.data
+          console.log(res)
+          if(res.status==0){
+            this.nickName = res.result
+          }
+        })
+      },
+      // 登陆
       login() {
+        console.log(this.userName)
+        console.log(this.userPwd)
         if (!this.userName || !this.userPwd) {
           this.errorTip = true
           return
@@ -174,6 +191,7 @@
           userName: this.userName,
           userPwd: this.userPwd
         }).then((response) => {
+          console.log(response)
           let res = response.data
           if (res.status == "0") {
             console.log(response)
@@ -183,6 +201,15 @@
             this.nickName = res.result.userName
           } else {
             this.errorTip = true
+          }
+        })
+      },
+      // 退出
+      loginOut(){
+        axios.post("/users/logout").then((response)=>{
+          let res = response.data
+          if(res.status == 0){
+            this.nickName = ''
           }
         })
       }
