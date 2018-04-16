@@ -18,9 +18,10 @@ module.exports = {
       '/goods/*':{
         target: "http://localhost:3000"//进行转换，当访问'/goods'时转换为‘http://localhost:3000/goods’
       },
-      '/users/*':{
+      '/users/**':{
         target: "http://localhost:3000"//进行转换，当访问'/goods'时转换为‘http://localhost:3000/goods’
       }
+      // /users/*匹配二级路由，/users/**匹配多级路由
     },
 
     // Various Dev Server settings
