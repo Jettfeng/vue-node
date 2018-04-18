@@ -136,7 +136,7 @@
           </div>
           <div class="next-btn-wrap">
             <!--<a class="btn btn&#45;&#45;m btn&#45;&#45;red">Next</a>-->
-            <router-link :to="{'path':'orderConform',query:{addressId:selectedAddressId}}" class="btn btn--m btn--red">
+            <router-link :to="{'path':'orderConfirm',query:{addressId:selectedAddressId}}" class="btn btn--m btn--red">
               Next
             </router-link>
           </div>

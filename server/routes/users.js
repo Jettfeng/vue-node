@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+require('./../util/util')
 let User = require('../models/user')
 
 /* GET users listing. */
@@ -275,4 +276,71 @@ router.post("/delAddress", function (req,res,next) {
     }
   });
 });
+router.post("/payment",function(req,res,next){
+  let userId = req.cookies.userId
+  let orderTotal = req.body.orderTotal
+  let addressId = req.body.addressId
+  User.findOne({userId:userId},function(err,doc){
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message,
+        result:''
+      })
+    }else{
+      // 获取用户地址信息
+      let address= ''
+      let goodsList = []
+
+      doc.addressList.forEach((item,index)=>{
+        if(item.addressId == addressId){
+          address = item
+        }
+      })
+      // 获取用户购物车的商品
+      doc.cartList.filter((item)=>{
+        if(item.checked == 1){
+          goodsList.push(item)
+        }
+      })
+
+      let platform = '662'
+      let r1 = Math.floor(Math.random()*10)
+      let r2 = Math.floor(Math.random()*10)
+
+      let sysSate = new Date().Format('yyyyMMddhhmmss')
+
+      let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss')
+      let orderId = platform + r1 + sysSate + r2
+
+      let order = {
+        orderId:orderId,
+        orderTotal:orderTotal,
+        addressInfo:address,
+        goodsList:goodsList,
+        orderStatus:'1',
+        createDate:createDate
+      }
+      doc.orderList.push(order)
+      doc.save(function(err1,doc1){
+        if(err1){
+          res.json({
+            status:'1',
+            msg:err1.message,
+            result:''
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'',
+            result:{
+              orderId:order.orderId,
+              orderTotal:order.orderTotal
+            }
+          })
+        }
+      })
+    }
+  })
+})
 module.exports = router;
